@@ -1,0 +1,10 @@
+{
+  "name": "angular-carousel",
+  "version": "0.0.1",
+  "main": "dist/angular-carousel.js",
+  "dependencies": {
+    "angular":        "~1.2.0",
+    "angular-swipe":  "git@github.com:marmorkuchen-net/angular-swipe.git"
+  },
+  "devDependencies": {}
+}

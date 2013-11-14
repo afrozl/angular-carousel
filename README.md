@@ -1,4 +1,4 @@
-angular-vertical-carousel
+angular-carousel
 =========================
 
-vertical mobile-ready carousel directive for angular
+mobile-ready vertical / horizontal carousel directive for angular 1.2
