@@ -1,3 +1,5 @@
+/* global angular */
+
 (function(window, angular, undefined) {
 
   'use strict';
@@ -122,7 +124,7 @@
             if ($scope.content !== undefined) {
               return $scope.content[_position(pId)];
             } else {
-              return ''
+              return '';
             }
           },
 
