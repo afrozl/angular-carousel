@@ -107,12 +107,18 @@ module.exports = function (grunt) {
                 files: [
                     'bower_components/angular/angular.js',
                     'bower_components/angular-swipe/dist/angular-swipe.js',
+                    'bower_components/angular-mocks/angular-mocks.js',
+                    'bower_components/jquery/jquery.js',
                     '<%= yeoman.src %>/*.js',
-                    'test/specs/*.js'
+                    'test/specs/*.js',
+                    'test/templates/*.html'
                 ],
                 reporters: [ 'dots', 'progress' ],
                 runnerPort: 9999,
-                browsers: ['PhantomJS']
+                browsers: ['PhantomJS'],
+                preprocessors: {
+                  'test/templates/*.html': 'ng-html2js'
+                }
             },
 
             unit:
