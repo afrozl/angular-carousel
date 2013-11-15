@@ -41,7 +41,7 @@ module.exports = function (grunt) {
       options: {
         port: 9000,
         livereload: 35729,
-        hostname: 'localhost'
+        hostname: '0.0.0.0'
       },
       livereload: {
         options: {
@@ -106,16 +106,19 @@ module.exports = function (grunt) {
         frameworks: [ 'jasmine' ],
         files: [
           'bower_components/angular/angular.js',
+          'bower_components/angular-animate/angular-animate.js',
           'bower_components/angular-swipe/dist/angular-swipe.js',
           'bower_components/angular-mocks/angular-mocks.js',
           'bower_components/jquery/jquery.js',
-          '<%= yeoman.src %>/*.js',
+          '<%= yeoman.src %>/*.{js,css}',
+          'test/helpers/*.js',
           'test/specs/*.js',
           'test/templates/*.html'
         ],
         reporters: [ 'dots', 'progress' ],
         runnerPort: 9999,
-        browsers: ['PhantomJS'],
+        logColors: true,
+        browsers: [ 'Chrome' ],
         preprocessors: {
           'test/templates/*.html': 'ng-html2js'
         }
@@ -176,17 +179,11 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('serve', function (target) {
-    if (target === 'dist') {
-      return grunt.task.run(['build', 'connect:dist:keepalive']);
-    }
-
-    grunt.task.run([
-      'clean:server',
-      'connect:livereload',
-      'watch'
-    ]);
-  });
+  grunt.registerTask('serve', [
+    'clean:server',
+    'connect:livereload',
+    'watch'
+  ]);
 
   grunt.registerTask('test', [
     'clean:server',

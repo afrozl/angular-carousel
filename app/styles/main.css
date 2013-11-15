@@ -25,6 +25,40 @@ h1, h2, p
 {
   width: 100%;
   height: 100%;
-  background-color: #ff33ad;
-  display: inline-block;
+  display: table;
 }
+
+.page h2
+{
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 4em;
+  margin: 0px;
+  padding: 0px;
+}
+
+  .page--color0
+  {
+    background-color: #ff33ad;
+  }
+
+  .page--color1
+  {
+    background-color: #33adff;
+  }
+
+  .page--color2
+  {
+    background-color: #dfad77;
+  }
+
+  .page--color3
+  {
+    background-color: #9912aa;
+  }
+
+  .page--color4
+  {
+    background-color: #ccaa88;
+  }
