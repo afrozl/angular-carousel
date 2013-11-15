@@ -26,8 +26,9 @@
           prefixes: [ 'webkit', 'moz', 'o', 'ms' ],
           transition: 'webkitTransitionEnd transitionend oTransitionEnd',
           treshold: 0.25,
-          rubberband: 3,
-          duration: 600
+          rubberband: 4,
+          duration: 300,
+          extreme: 100
         };
 
         // private
@@ -35,7 +36,7 @@
         var _index = 0;
         var _order = [ 0, 1, 2 ];
 
-        var _swipe, _height, _flipped;
+        var _swipe, _height, _flipped, _lock;
 
         // dom
 
@@ -157,24 +158,7 @@
         }
 
         function _start() {
-
-          var now = (new Date()).getTime();
-          var duration = now - _swipe.last;
-
           _animated(false);
-
-          //_flipped = false;
-
-          if (duration < _swipe.duration) {
-            _cancel(duration / _swipe.duration);
-          }
-
-        }
-
-        function _cancel(cProgress) {
-          // @ TODO
-          var progress = (1 - Math.round(cProgress * 100) / 100);
-          //_move(_swipe.slider * progress);
         }
 
         function _center() {
@@ -188,30 +172,60 @@
 
         function _end() {
 
-          _swipe.last = (new Date()).getTime();
-
+          _lock = true;
           _flipped = false;
 
           var dist = Math.abs(_swipe.start - _swipe.current);
+          if (dist === 0) { dist = 1; }
 
-          _animated(true, Math.round((dist / _height) * _options.duration));
+          var now = (new Date()).getTime();
+          var elapsed = now - _swipe.last;
+          var duration;
 
-          if (_border() || dist < _options.treshold * _height) {
-            _center();
+          if (_swipe.last === undefined || elapsed > _options.duration) {
+            duration = Math.round((dist / _height) * _options.duration);
           } else {
-            _flipped = true;
+            duration = Math.round((elapsed / _options.duration) * _options.duration);
+          }
 
-            if (_swipe.slider === (-_height * 2) || _swipe.slider === 0 )
-            {
-              _finished();
-            } else {
-              if (_swipe.direction) {
-                _move(-_height * 2);
+          if (elapsed < _options.extreme && ! _border()) {
+            _animated(false);
+            _flipped = true;
+            _finished();
+
+          } else {
+
+            if (duration === 0) { duration = 1; }
+
+            _animated(true, duration);
+
+            _swipe.last = (new Date()).getTime();
+
+            if (_border() || dist < _options.treshold * _height) {
+
+              if (_swipe.slider === -_height) {
+                _finished();
               } else {
-                _move(0);
+                _center();
+              }
+
+            } else {
+
+              _flipped = true;
+
+              if (_swipe.slider === (-_height * 2) || _swipe.slider === 0 ) {
+                _finished();
+              } else {
+                if (_swipe.direction) {
+                  _move(-_height * 2);
+                } else {
+                  _move(0);
+                }
               }
             }
+
           }
+
         }
 
         angular.element(_slider).bind(_options.transition, function(){ _finished(); });
@@ -228,6 +242,8 @@
               _center();
             });
           }
+
+          _lock = false;
         }
 
         // swipe
@@ -237,19 +253,26 @@
           current: 0,
           direction: false,
           slider: 0,
+
           last: undefined,
-          duration: 0
+          duration: 0,
+          started: false
         };
 
         var swipeEvents = {
 
           start: function(sCoords) {
+            if (_lock){ return; }
             _swipe.start = sCoords.y;
             _swipe.current = sCoords.y;
             _start();
+
+            _swipe.started = true;
           },
 
           move: function(sCoords) {
+
+            if (_lock || !_swipe.started){ return; }
 
             var direction = (sCoords.y - _swipe.start) <= 0;
             _swipe.direction = direction;
@@ -277,10 +300,8 @@
           },
 
           end: function() {
-            _end();
-          },
-
-          cancel: function() {
+            if (_lock || !_swipe.started){ return; }
+            _swipe.started = false;
             _end();
           }
 

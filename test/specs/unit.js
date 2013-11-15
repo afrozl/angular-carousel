@@ -18,11 +18,14 @@
       swipe(-_dimension / 2);
     }
 
-    function swipe(distance) {
+    function swipe(distance, noTransitionEnd) {
       browserTrigger($element, 'touchstart', { x: _dimension/2, y: (_dimension/2) });
       browserTrigger($element, 'touchmove', { x: _dimension/2, y: (_dimension/2) + distance });
       browserTrigger($element, 'touchend', { x: _dimension/2, y: (_dimension/2) + distance });
-      browserTrigger($('.carousel__slider' ,$element), 'transitionend' );
+
+      if (noTransitionEnd === undefined || ! noTransitionEnd) {
+        browserTrigger($('.carousel__slider' ,$element), 'transitionend' );
+      }
     }
 
     function position(position) {
@@ -104,8 +107,13 @@
         swipeDown();
         expect($('#title', position(1)).html()).toEqual('Page 2');
         swipeDown();
-        expect($('#title', position(1)).html()).toEqual('Page 3');
         swipeUp();
+        expect($('#title', position(1)).html()).toEqual('Page 2');
+      });
+
+      it('stays on the page when swipe is stopped and released', function() {
+        swipe(-_dimension/2, true);
+        swipe(_dimension/2);
         expect($('#title', position(1)).html()).toEqual('Page 2');
       });
 
