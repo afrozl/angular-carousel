@@ -1,6 +1,9 @@
-body
+html, body
 {
-  background: #fafafa;
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
 }
 
 h1, h2, p
@@ -11,14 +14,14 @@ h1, h2, p
 
 .wrapper
 {
-  margin: 0 auto;
-  width: 75%;
+  height: 100%;
+  width: 100%;
 }
 
 .container
 {
   width: 100%;
-  height: 150px;
+  height: 100%;
 }
 
 .page
@@ -28,12 +31,12 @@ h1, h2, p
   display: table;
 }
 
-.page h2
+.page h1
 {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
-  font-size: 4em;
+  font-size: 6em;
   margin: 0px;
   padding: 0px;
 }

@@ -26,7 +26,7 @@
           treshold: 0.25,
           rubberband: 4,
           duration: 300,
-          extreme: 100,
+          extreme: 200,
           hint: 0
         };
 
@@ -208,7 +208,7 @@
             duration = Math.round((elapsed / _options.duration) * _options.duration);
           }
 
-          if (dist > 0 && elapsed < _options.extreme && ! _border()) {
+          if (dist > 2 && elapsed < _options.extreme && ! _border()) {
             _animated(false);
             _flipped = true;
             _finished();
