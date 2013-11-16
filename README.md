@@ -28,14 +28,14 @@ Wrap the carousel in a layout-container:
       <carousel content="mycontent"></carousel>
     </div>
 
-The carousel is watching its content attribute, awaiting an array with strings of view template urls which will be our included as our carousel pages. For example:
+The carousel is watching its content attribute, awaiting an array with strings of view template urls which will be included as our carousel pages. For example:
 
     app.controller('AppCtrl', ['$scope', function($scope)
     {
       $scope.mycontent = [ 'views/home.html', 'views/about.html', 'views/contact.html' ];
     }]);
 
-# Get current index
+#### Get current index
 
 The page index is "exposed" to the scope of the current included pages and can be accessed with a small (hacky) trick. Use this in your template files (like 'views/gallery.html'):
 
@@ -44,7 +44,7 @@ The page index is "exposed" to the scope of the current included pages and can b
 
 Look into 'app/' for a similar example.
 
-# Options
+#### Options
 
 Overwrite the default options via the *options* attribute in the directive:
 
@@ -52,17 +52,17 @@ Overwrite the default options via the *options* attribute in the directive:
 
 Following options are available:
 
-* treshold: 0.25 (Double) - How long has the swipe to be to trigger a page flip (0.25 = 25% of carousel height)
-* rubberband: 4 (Integer) - Effect when reaching the carousel's border
-* duration: 300 (Integer) - Milliseconds of the longest animation
-* extreme: 100 (Integer) - When the user gives another input within these Milliseconds it will be handled with nearly no animation (for fast usage of the carousel)
-* hint: 0 (Integer) - Makes the border of the coming page visible (size in pixels)
-* buffer: 3 (Integer) - Number of the loaded pages (only odd numbers!)
-* index: 'cindex' (String) - name of the variable which will be injected into the templates scope
+* *treshold*: 0.25 (Double) - swipe distance to trigger a page flip (0.25 = 25% of carousel's height)
+* *rubberband*: 4 (Integer) - effect when reaching the carousel's border
+* *duration*: 300 (Integer) - milliseconds (ms) of the longest transition animation
+* *extreme*: 200 (Integer) - when (ms) the user starts two swipes within this timeframe it will be handled with nearly no animation (for fast usage of the carousel)
+* *hint*: 0 (Integer) - makes the border of the bottom coming page visible (size in pixels)
+* *buffer*: 3 (Integer) - number of the loaded pages (only odd numbers!)
+* *index*: 'cindex' (String) - name of the variable which will be injected into the templates scope
 
 # Development
 
-Using grunt, bower and karma test environment with jasmine framework.
+Using grunt, bower and karma test environment with jasmine framework and jquery.
 
     bower install && npm install
 
@@ -71,4 +71,4 @@ Using grunt, bower and karma test environment with jasmine framework.
     grunt karma
     grunt karma:live
 
-    grunt build
+    grunt build (default)
