@@ -13,10 +13,12 @@ and run *bower install* afterwards.
 
 The carousel depends on [angular-swipe](https://github.com/marmorkuchen-net/angular-swipe), a small extention of the current angular 1.2 $swipe service, since it doesnt support vertical swipe movements.
 
-Include these files into your .html document:
+Include these *.js* and *.css* files into your *.html* main document:
 
     <script src="<your bower_components>/angular-swipe/dist/angular-swipe.js"></script>
     <script src="<your bower_components>/angular-carousel/dist/angular-carousel.js"></script>
+
+    <link rel="stylesheet" href="<your bower_components>/angular-carousel/dist/angular-carousel.css">
 
 ## Usage
 
