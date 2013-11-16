@@ -6,7 +6,7 @@
 
   var ngCarousel = angular.module('angular-carousel', [ 'swipe' ]);
 
-  ngCarousel.directive('carousel', [ '$parse', 'swipe', function($parse, $swipe) {
+  ngCarousel.directive('carousel', [ '$compile', 'swipe', function($compile, $swipe) {
     return {
 
       restrict: 'E',
@@ -14,34 +14,46 @@
       scope: {
         content: '=content'
       },
-      template: '<div class="carousel"><div class="carousel__slider">' +
-         '<div class="carousel__page"><div class="carousel__page__container" ng-include="carousel.content(0)" ng-init="cindex=0"></div></div>' +
-         '<div class="carousel__page"><div class="carousel__page__container" ng-include="carousel.content(1)" ng-init="cindex=1"></div></div>' +
-         '<div class="carousel__page"><div class="carousel__page__container" ng-include="carousel.content(2)" ng-init="cindex=2"></div></div>' +
-       '</div></div>',
+      template: '<div class="carousel"><div class="carousel__slider"></div></div>',
 
       link: function($scope, $element, attrs) {
 
         var _options = {
+          index: 'cindex',
           prefixes: [ 'webkit', 'moz', 'o', 'ms' ],
           transition: 'webkitTransitionEnd transitionend oTransitionEnd',
+          buffer: 3,
           treshold: 0.25,
           rubberband: 4,
           duration: 300,
-          extreme: 100
+          extreme: 100,
+          hint: 0
         };
+
+        if (attrs.options !== undefined && typeof $scope.$eval(attrs.options) === 'object') {
+          angular.extend(_options, $scope.$eval(attrs.options));
+        }
 
         // private
 
-        var _index = 0;
-        var _order = [ 0, 1, 2 ];
-
+        var _index, _order;
         var _swipe, _height, _flipped, _lock;
+
+        var _top = -(Math.floor(_options.buffer / 2) + 1);
+        var _bottom = -Math.floor(_options.buffer / 2);
 
         // dom
 
         var _slider = angular.element($element).children();
+
+        for (var i = 0; i < _options.buffer; i++) {
+          var elem = angular.element('<div class="carousel__page"><div class="carousel__page__container" ng-include="carousel.content(' + i + ')" ng-init="'+ _options.index + '=' + i + '"></div></div>');
+          angular.element(_slider).append(elem);
+        }
+
         var _pages = angular.element(_slider).children();
+
+        $compile(_pages)($scope);
 
         // helpers
 
@@ -77,33 +89,39 @@
 
         function _border() {
           if (_swipe.direction) {
-            return _index === $scope.content.length - 2;
+            return _index === $scope.content.length + _top;
           } else {
-            return _index === -1;
+            return _index === _bottom;
           }
         }
 
         // content
 
         function _init() {
-          _index = -1;
-          _order = [ 0, 1, 2 ];
+          _index = _bottom;
+          _order = [];
+
+          for (var i = 0; i < _options.buffer; i++) {
+            _order.push(i);
+          }
+
           _resize();
           _rearrange();
           _center();
         }
 
         function _flip() {
-          var tmp;
+          var tmp, i;
 
           if (_swipe.direction) {
 
             // go down
 
             tmp = _order[0];
-            _order[0] = _order[1];
-            _order[1] = _order[2];
-            _order[2] = tmp;
+            for (i = 0; i < _options.buffer - 1; i++) {
+              _order[i] = _order[i + 1];
+            }
+            _order[_options.buffer - 1] = tmp;
 
             _index++;
 
@@ -111,10 +129,11 @@
 
             // go up
 
-            tmp = _order[0];
-            _order[0] = _order[1];
-            _order[1] = _order[2];
-            _order[2] = tmp;
+            tmp = _order[_options.buffer - 1];
+            for (i = _options.buffer - 1; i > 0; i--) {
+              _order[i] = _order[i - 1];
+            }
+            _order[0] = tmp;
 
             _index--;
 
@@ -162,11 +181,12 @@
         }
 
         function _center() {
-          _move(-_height);
+          _move(_height * _bottom);
         }
 
         function _move(mCoordY) {
-          angular.element(_slider).css(_prefixes( 'transform', 'translate3d(0, ' + mCoordY + 'px, 0 )' ));
+          var newy = mCoordY - _options.hint;
+          angular.element(_slider).css(_prefixes( 'transform', 'translate3d(0, ' + newy + 'px, 0 )' ));
           _swipe.slider = mCoordY;
         }
 
@@ -188,7 +208,7 @@
             duration = Math.round((elapsed / _options.duration) * _options.duration);
           }
 
-          if (elapsed < _options.extreme && ! _border()) {
+          if (dist > 0 && elapsed < _options.extreme && ! _border()) {
             _animated(false);
             _flipped = true;
             _finished();
@@ -203,7 +223,7 @@
 
             if (_border() || dist < _options.treshold * _height) {
 
-              if (_swipe.slider === -_height) {
+              if (_swipe.slider === (_height * _bottom)) {
                 _finished();
               } else {
                 _center();
@@ -213,13 +233,13 @@
 
               _flipped = true;
 
-              if (_swipe.slider === (-_height * 2) || _swipe.slider === 0 ) {
+              if (_swipe.slider === (_height * _top) || _swipe.slider === _height * (_bottom + 1) ) {
                 _finished();
               } else {
                 if (_swipe.direction) {
-                  _move(-_height * 2);
+                  _move(_height * _top);
                 } else {
-                  _move(0);
+                  _move(_height * (_bottom + 1));
                 }
               }
             }
@@ -292,9 +312,9 @@
             else if (! _border())
             {
               if (direction) {
-                _move(-_height * 2);
+                _move(_height * _top);
               } else {
-                _move(0);
+                _move(_height * (_bottom + 1));
               }
             }
           },
