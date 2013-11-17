@@ -268,7 +268,7 @@
         angular.element(_slider).bind(
           _options.transition,
           function(event) {
-            if (event.srcElement.className.indexOf('carousel__slider') > -1) {
+            if (event.target.className.indexOf('carousel__slider') > -1) {
               _finished();
             }
           }
