@@ -89,13 +89,30 @@
 
         function _border() {
           if (_swipe.direction) {
-            return _index === $scope.content.length + _top;
+            return _index === _count() + _top;
           } else {
             return _index === _bottom;
           }
         }
 
         // content
+
+        function _content(cPosition) {
+
+          if ($scope.content.length !== undefined) {
+            return $scope.content[cPosition];
+          } else {
+            return $scope.content.template;
+          }
+        }
+
+        function _count() {
+          if ($scope.content.length !== undefined) {
+            return $scope.content.length;
+          } else {
+            return $scope.content.count;
+          }
+        }
 
         function _init() {
           _index = _bottom;
@@ -339,8 +356,8 @@
             if ($scope.content !== undefined) {
               var position = _position(pId) + _index;
 
-              if (position <= $scope.content.length && position > -1) {
-                content = $scope.content[position];
+              if (position < _count() && position > -1) {
+                content = _content(position);
               }
             }
 

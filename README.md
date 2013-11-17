@@ -35,6 +35,20 @@ The carousel is watching its content attribute, awaiting an array with strings o
       $scope.mycontent = [ 'views/home.html', 'views/about.html', 'views/contact.html' ];
     }]);
 
+When using the same template for every page (only the index changes, as in galleries for example) pass over an object with the following attributes:
+
+    app.controller('AppCtrl', ['$scope', function($scope)
+    {
+
+      $scope.gallery = [ 'image1.jpg', 'image2.jpg', 'image3.jpg', 'image4.jpg' ];
+
+      $scope.mycontent = {
+        template: 'views/gallery.html',
+        count: $scope.gallery.length
+      };
+
+    }]);
+
 # Get current index
 
 The page index is "exposed" to the scope of the current included pages and can be accessed with a small (hacky) trick. Use this in your template files (like 'views/gallery.html'):

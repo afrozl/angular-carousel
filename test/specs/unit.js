@@ -101,6 +101,13 @@
       expect($('#index', position(2)).html()).toEqual('1');
     });
 
+    it('can read objects for content info', function() {
+      $scope.$apply(function() {
+        $scope.content = { template: 'test/templates/page4.html', count: 10 };
+      });
+      expect($('#title', position(1)).html()).toEqual('Page 4');
+    });
+
     describe('swipe handling', function() {
 
       it('changes the focused page after swipe', function() {
