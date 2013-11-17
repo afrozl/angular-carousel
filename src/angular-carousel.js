@@ -372,7 +372,7 @@
 
         // init when content changed
 
-        $scope.$watchCollection('content', function() {
+        $scope.$watch('content', function() {
           _init();
         });
 

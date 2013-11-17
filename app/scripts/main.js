@@ -16,9 +16,9 @@ app.controller('AppCtrl', ['$scope', '$timeout', function($scope, $timeout)
     return content;
   }
 
-  //$scope.somecontent = getContent(5);
+  $scope.somecontent = getContent(5);
 
-  $scope.somecontent = { template: 'views/gallery.html', count: 10 };
+  //$scope.somecontent = { template: 'views/gallery.html', count: 10 };
 
-  //$timeout(function(){ $scope.somecontent = getContent(5); }, 2000);
+  $timeout(function(){ $scope.somecontent = getContent(5); }, 2000);
 }]);
