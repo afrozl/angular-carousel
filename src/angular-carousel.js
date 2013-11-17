@@ -265,7 +265,14 @@
 
         }
 
-        angular.element(_slider).bind(_options.transition, function(){ _finished(); });
+        angular.element(_slider).bind(
+          _options.transition,
+          function(event) {
+            if (event.srcElement.className.indexOf('carousel__slider') > -1) {
+              _finished();
+            }
+          }
+        );
 
         function _finished() {
 
