@@ -51,9 +51,9 @@
           angular.element(_slider).append(elem);
         }
 
-        var _pages = angular.element(_slider).children();
+        $compile(_slider)($scope);
 
-        $compile(_pages)($scope);
+        var _pages = angular.element(_slider).children();
 
         // helpers
 
@@ -190,7 +190,7 @@
         }
 
         function _duration(dMilliseconds) {
-          angular.element(_slider).css( _prefixes('transitionDuration', dMilliseconds + 'ms') );
+          angular.element(_slider).css( _prefixes('transition-duration', dMilliseconds + 'ms') );
         }
 
         function _start() {
@@ -275,19 +275,18 @@
         );
 
         function _finished() {
+          $scope.$apply(function() {
 
-          _animated(false);
+            _animated(false);
 
-          if (_flipped) {
-            $scope.$apply(function()
-            {
+            if (_flipped) {
               _flip();
               _rearrange();
               _center();
-            });
-          }
+            }
 
-          _lock = false;
+            _lock = false;
+          });
         }
 
         // swipe
