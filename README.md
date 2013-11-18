@@ -54,7 +54,7 @@ When using the same template for every page (only the index changes, as in galle
 The page index is "exposed" to the scope of the current included pages and can be accessed with a small (hacky) trick. Use this in your template files (like 'views/gallery.html'):
 
     <h1>Gallery</h1>
-    <p>Slide {{ carousel.index(cindex) + 1 }} of {{ pictures.length }}</p>
+    <p>Slide {{ carousel.index(page.id) + 1 }} of {{ pictures.length }}</p>
 
 Look into 'app/' for a similar example.
 
@@ -72,7 +72,6 @@ Following options are available:
 * *extreme*: 200 (Integer) - when (ms) the user starts two swipes within this timeframe it will be handled with nearly no animation (for fast usage of the carousel)
 * *hint*: 0 (Integer) - makes the border of the bottom coming page visible (size in pixels)
 * *buffer*: 3 (Integer) - number of the loaded pages (only odd numbers!)
-* *index*: 'cindex' (String) - name of the variable which will be injected into the templates scope
 
 # Development
 

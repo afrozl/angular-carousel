@@ -98,7 +98,7 @@
     });
 
     it('exposes the current index of this page', function() {
-      expect($('#index', position(2)).html()).toEqual('1');
+      expect($('#index', position(2)).html()).toEqual('0');
     });
 
     it('can read objects for content info', function() {

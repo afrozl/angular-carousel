@@ -6,7 +6,7 @@
 
   var ngCarousel = angular.module('angular-carousel', [ 'swipe' ]);
 
-  ngCarousel.directive('carousel', [ '$compile', 'swipe', function($compile, $swipe) {
+  ngCarousel.directive('carousel', [ '$timeout', 'swipe', function($timeout, $swipe) {
     return {
 
       restrict: 'E',
@@ -14,12 +14,14 @@
       scope: {
         content: '=content'
       },
-      template: '<div class="carousel"><div class="carousel__slider"></div></div>',
+      template: '<div class="carousel">' +
+        '<div class="carousel__slider">' +
+        '<div class="carousel__page" ng-repeat="page in carousel.pages() track by $index"><div class="carousel__page__container" ng-include="carousel.content($index)"></div></div>' +
+        '</div></div>',
 
       link: function($scope, $element, attrs) {
 
         var _options = {
-          index: 'cindex',
           prefixes: [ 'webkit', 'moz', 'o', 'ms' ],
           transition: 'webkitTransitionEnd transitionend oTransitionEnd',
           buffer: 3,
@@ -36,7 +38,7 @@
 
         // private
 
-        var _index, _order;
+        var _index, _order, _pages;
         var _swipe, _height, _flipped, _lock;
 
         var _top = -(Math.floor(_options.buffer / 2) + 1);
@@ -45,15 +47,6 @@
         // dom
 
         var _slider = angular.element($element).children();
-
-        for (var i = 0; i < _options.buffer; i++) {
-          var elem = angular.element('<div class="carousel__page"><div class="carousel__page__container" ng-include="carousel.content(' + i + ')" ng-init="'+ _options.index + '=' + i + '"></div></div>');
-          angular.element(_slider).append(elem);
-        }
-
-        $compile(_slider)($scope);
-
-        var _pages = angular.element(_slider).children();
 
         // helpers
 
@@ -117,13 +110,18 @@
         function _init() {
           _index = _bottom;
           _order = [];
+          _pages = [];
 
           for (var i = 0; i < _options.buffer; i++) {
             _order.push(i);
+            _pages.push( { id: i } );
           }
-
           _resize();
-          _rearrange();
+
+          $timeout(function() {
+            _rearrange();
+          }, 0);
+
           _center();
         }
 
@@ -158,7 +156,9 @@
         }
 
         function _rearrange() {
-          angular.forEach(_pages, function(ePage, eIndex) {
+          var pageElements = angular.element(_slider).children();
+
+          angular.forEach(pageElements, function(ePage, eIndex) {
             angular.element(ePage).css(_prefixes( 'transform', 'translate3d(0, ' + (_position(eIndex) * _height) + 'px, 0 )' ));
           });
         }
@@ -275,13 +275,15 @@
         );
 
         function _finished() {
+
           _animated(false);
 
           if (_flipped) {
             $scope.$apply(function() {
               _flip();
+              _rearrange();
             });
-            _rearrange();
+
             _center();
           }
 
@@ -356,9 +358,11 @@
         $scope.carousel = {
 
           content: function(pId) {
+
             var content = '';
 
             if ($scope.content !== undefined) {
+
               var position = _position(pId) + _index;
 
               if (position < _count() && position > -1) {
@@ -371,6 +375,10 @@
 
           index: function(pId) {
             return _position(pId) + _index;
+          },
+
+          pages: function() {
+            return _pages;
           }
 
         };
