@@ -275,18 +275,17 @@
         );
 
         function _finished() {
-          $scope.$apply(function() {
+          _animated(false);
 
-            _animated(false);
-
-            if (_flipped) {
+          if (_flipped) {
+            $scope.$apply(function() {
               _flip();
-              _rearrange();
-              _center();
-            }
+            });
+            _rearrange();
+            _center();
+          }
 
-            _lock = false;
-          });
+          _lock = false;
         }
 
         // swipe
