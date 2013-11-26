@@ -11,6 +11,9 @@
 
       restrict: 'E',
       replace: true,
+      scope: {
+        content: '=content'
+      },
       template: '<div class="carousel">' +
         '<div class="carousel__slider">' +
         '<div class="carousel__page" ng-repeat="page in carousel.pages() track by $index"><div class="carousel__page__container" ng-include="carousel.content($index)"></div></div>' +
