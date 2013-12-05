@@ -314,9 +314,9 @@
             _swipe.started = true;
           },
 
-          move: function(sCoords) {
+          move: function(sCoords, event) {
 
-            if (_lock || !_swipe.started){ return; }
+            if ( _lock || !_swipe.started || !event.isVertical ){ return; }
 
             var direction = (sCoords.y - _swipe.start) <= 0;
             _swipe.direction = direction;
@@ -343,8 +343,8 @@
             }
           },
 
-          end: function() {
-            if (_lock || !_swipe.started){ return; }
+          end: function(sCoords, event) {
+            if ( _lock || !_swipe.started || ! event.isVertical ){ return; }
             _swipe.started = false;
             _end();
           }
