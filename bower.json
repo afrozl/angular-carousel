@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "dist/angular-carousel.js",
   "dependencies": {
-    "angular": "~1.2.2",
+    "angular": "~1.2.3",
     "angular-swipe": "git@github.com:marmorkuchen-net/angular-swipe.git"
   },
   "devDependencies": {
-    "angular-mocks": "~1.2.2",
+    "angular-mocks": "~1.2.3",
     "jquery": "~2.0.3"
   }
 }
