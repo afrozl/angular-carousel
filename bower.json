@@ -1,6 +1,6 @@
 {
   "name": "angular-carousel",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/angular-carousel.js",
   "dependencies": {
     "angular": "~1.2.3",
