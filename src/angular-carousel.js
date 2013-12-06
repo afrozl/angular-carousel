@@ -28,7 +28,7 @@
           treshold: 0.25,
           rubberband: 4,
           duration: 300,
-          extreme: 200,
+          extreme: 600,
           hint: 0
         };
 
@@ -62,8 +62,22 @@
           return css;
         }
 
+        function _hint(hAdd) {
+          return _height - _options.hint;
+        }
+
         function _resize() {
           _height = angular.element($element)[0].offsetHeight;
+
+          if (_options.hint > 0){
+            $timeout(function(){
+              var pageElements = angular.element(_slider).children();
+
+              angular.forEach(pageElements, function(ePage, eIndex) {
+                angular.element(ePage).css('height', (_height - _options.hint) + 'px');
+              });
+            }, 0);
+          }
         }
 
         function _position(pId) {
@@ -157,9 +171,11 @@
 
         function _rearrange() {
           var pageElements = angular.element(_slider).children();
+          var position;
 
           angular.forEach(pageElements, function(ePage, eIndex) {
-            angular.element(ePage).css(_prefixes( 'transform', 'translate3d(0, ' + (_position(eIndex) * _height) + 'px, 0 )' ));
+            position = (_position(eIndex) * (_height - _options.hint));
+            angular.element(ePage).css(_prefixes( 'transform', 'translate3d(0, ' + position + 'px, 0 )' ));
           });
         }
 
@@ -202,7 +218,7 @@
         }
 
         function _move(mCoordY) {
-          var newy = mCoordY - _options.hint;
+          var newy = mCoordY + (_options.hint * 2);
           angular.element(_slider).css(_prefixes( 'transform', 'translate3d(0, ' + newy + 'px, 0 )' ));
           _swipe.slider = mCoordY;
         }
@@ -225,12 +241,17 @@
             duration = Math.round((elapsed / _options.duration) * _options.duration);
           }
 
-          if (dist > 2 && elapsed < _options.extreme && ! _border()) {
+          if (dist > 10 && elapsed < _options.extreme && ! _border()) {
+
+            // 1) extreme mode: non-animated page flip
+
             _animated(false);
             _flipped = true;
             _finished();
 
           } else {
+
+            // 2) normal behaviour
 
             if (duration === 0) { duration = 1; }
 
@@ -240,23 +261,41 @@
 
             if (_border() || dist < _options.treshold * _height) {
 
+              // 2a) we stay on this page
+
               if (_swipe.slider === (_height * _bottom)) {
+
+                // no changes needed, we are already here
+
                 _finished();
+
               } else {
+
+                // animation: go to neutral position
+
                 _center();
               }
 
             } else {
 
+              // 2b) we flip to another page
+
               _flipped = true;
 
-              if (_swipe.slider === (_height * _top) || _swipe.slider === _height * (_bottom + 1) ) {
+              if (_swipe.slider === ((_height * _top) + _options.hint) || _swipe.slider === (_height * (_bottom + 1)) - _options.hint ) {
+
+                // no changes needed, we are already there
+
                 _finished();
+
               } else {
+
+                // animation: flip to new page
+
                 if (_swipe.direction) {
-                  _move(_height * _top);
+                  _move((_height * _top) + _options.hint);
                 } else {
-                  _move(_height * (_bottom + 1));
+                  _move((_height * (_bottom + 1)) - _options.hint);
                 }
               }
             }
@@ -306,6 +345,7 @@
         var swipeEvents = {
 
           start: function(sCoords) {
+
             if (_lock){ return; }
             _swipe.start = sCoords.y;
             _swipe.current = sCoords.y;
@@ -316,12 +356,13 @@
 
           move: function(sCoords, event) {
 
-            if ( _lock || !_swipe.started || !event.isVertical ){ return; }
+            if ( _lock || ! _swipe.started || ! event.isVertical ){ return; }
 
             var direction = (sCoords.y - _swipe.start) <= 0;
             _swipe.direction = direction;
 
-            if (Math.abs(_swipe.start - sCoords.y) <= _height) {
+            if (Math.abs(_swipe.start - sCoords.y) <= _hint()) {
+
               var delta = sCoords.y - _swipe.current;
               var newy = _swipe.slider + delta;
 
@@ -336,15 +377,15 @@
             else if (! _border())
             {
               if (direction) {
-                _move(_height * _top);
+                _move((_height * _top) + _options.hint);
               } else {
-                _move(_height * (_bottom + 1));
+                _move((_height * (_bottom + 1)) - _options.hint);
               }
             }
           },
 
           end: function(sCoords, event) {
-            if ( _lock || !_swipe.started || ! event.isVertical ){ return; }
+            if ( _lock || ! _swipe.started || ! event.isVertical ){ return; }
             _swipe.started = false;
             _end();
           }
