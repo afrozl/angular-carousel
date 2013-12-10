@@ -358,6 +358,9 @@
 
             if ( _lock || ! _swipe.started || ! event.isVertical ){ return; }
 
+            event.stopPropagation();
+            event.preventDefault();
+
             var direction = (sCoords.y - _swipe.start) <= 0;
             _swipe.direction = direction;
 
@@ -386,6 +389,10 @@
 
           end: function(sCoords, event) {
             if ( _lock || ! _swipe.started || ! event.isVertical ){ return; }
+
+            event.stopPropagation();
+            event.preventDefault();
+
             _swipe.started = false;
             _end();
           }
