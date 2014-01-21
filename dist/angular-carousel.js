@@ -345,56 +345,54 @@
         var swipeEvents = {
 
           start: function(sCoords) {
+            if (! _lock) {
+              _swipe.start = sCoords.y;
+              _swipe.current = sCoords.y;
+              _start();
 
-            if (_lock){ return; }
-            _swipe.start = sCoords.y;
-            _swipe.current = sCoords.y;
-            _start();
-
-            _swipe.started = true;
+              _swipe.started = true;
+            }
           },
 
           move: function(sCoords, event) {
+            if (! _lock && _swipe.started && event.isVertical ) {
 
-            if ( _lock || ! _swipe.started || ! event.isVertical ){ return; }
+              event.preventDefault();
 
-            event.stopPropagation();
-            event.preventDefault();
+              var direction = (sCoords.y - _swipe.start) <= 0;
+              _swipe.direction = direction;
 
-            var direction = (sCoords.y - _swipe.start) <= 0;
-            _swipe.direction = direction;
+              if (Math.abs(_swipe.start - sCoords.y) <= _hint()) {
 
-            if (Math.abs(_swipe.start - sCoords.y) <= _hint()) {
+                var delta = sCoords.y - _swipe.current;
+                var newy = _swipe.slider + delta;
 
-              var delta = sCoords.y - _swipe.current;
-              var newy = _swipe.slider + delta;
+                _swipe.current = sCoords.y;
 
-              _swipe.current = sCoords.y;
-
-              if (_border()) {
-                _move( _swipe.slider + delta / _options.rubberband );
-              } else {
-                _move(newy);
+                if (_border()) {
+                  _move( _swipe.slider + delta / _options.rubberband );
+                } else {
+                  _move(newy);
+                }
               }
-            }
-            else if (! _border())
-            {
-              if (direction) {
-                _move((_height * _top) + _options.hint);
-              } else {
-                _move((_height * (_bottom + 1)) - _options.hint);
+              else if (! _border())
+              {
+                if (direction) {
+                  _move((_height * _top) + _options.hint);
+                } else {
+                  _move((_height * (_bottom + 1)) - _options.hint);
+                }
               }
+
             }
           },
 
           end: function(sCoords, event) {
-            if ( _lock || ! _swipe.started || ! event.isVertical ){ return; }
-
-            event.stopPropagation();
-            event.preventDefault();
-
-            _swipe.started = false;
-            _end();
+            if (! _lock && _swipe.started && event.isVertical ) {
+              event.preventDefault();
+              _swipe.started = false;
+              _end();
+            }
           }
 
         };
