@@ -344,7 +344,10 @@
 
         var swipeEvents = {
 
-          start: function(sCoords) {
+          start: function(sCoords, event) {
+
+            event.preventDefault();
+
             if (! _lock) {
               _swipe.start = sCoords.y;
               _swipe.current = sCoords.y;
@@ -355,9 +358,10 @@
           },
 
           move: function(sCoords, event) {
-            if (! _lock && _swipe.started && event.isVertical ) {
 
-              event.preventDefault();
+            event.preventDefault();
+
+            if (! _lock && _swipe.started && event.isVertical ) {
 
               var direction = (sCoords.y - _swipe.start) <= 0;
               _swipe.direction = direction;
