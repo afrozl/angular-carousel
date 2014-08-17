@@ -3,6 +3,10 @@ angular-carousel
 
 Mobile-ready vertical carousel directive for angular js 1.2.
 
+## Important
+
+This repository is not maintained anymore since the awesome [Ionic Framework](http://ionicframework.com/) made us happy now (you might want to look into theire *paging* option of the *ionScroll* directive to build a vertical carousel). Anyways this is still online if you want to mess around with parts of the code.
+
 ## Install
 
 Add this line to your *bower.json* dependencies
